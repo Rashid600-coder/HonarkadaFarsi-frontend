@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>هنرکده فارسی</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+        <style>
+        .menu-icon {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 6px;
+          width: 35px;
+          height: 35px;
+          border-radius: 50%;
+          background-color: #2c2d2d;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+          right: 1px;
+        }
+
+        .menu-icon span {
+          display: block;
+          height: 4px;
+          width: 4px;
+          background-color: #fff;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+        }
+
+        .menu-icon:hover {
+          transform: scale(1.1);
+          background-color: #3a3b3b;
+        }
+
+        .menu-icon:hover span {
+          background-color: #ffcc00;
+        }
+
+        .custom-nav-graphic {
+            display: flex;
+            gap: 20px; /* فاصله بین آیتم‌ها */
+            align-items: center;
+        }
+
+        .custom-nav-graphic .nav-link {
+            position: relative;
+            color: #f0f0f0;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-nav-graphic .nav-link::after {
+            content: "";
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            left: 50%;
+            bottom: 4px;
+            background-color: #ffcc00;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .custom-nav-graphic .nav-link:hover {
+            color: #ffcc00;
+        }
+
+        .custom-nav-graphic .nav-link:hover::after {
+            left: 0;
+            width: 100%;
+        }
+
+        .custom-nav-graphic .nav-link.active {
+            color: #ffcc00;
+            font-weight: 600;
+        }
+
+        @media (max-width: 991px) {
+            .custom-nav-graphic {
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+        }
+
+        .search-wrapper {
+          position: relative;
+          display: inline-block;
+        }
+
+        .search-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 20px;
+          color: #fff;
+          margin-left: 120px;
+          position: relative;
+          transition: color 0.3s ease;
+        }
+
+        .search-btn::after {
+          content: "";
+          position: absolute;
+          width: 0%;
+          height: 2px;
+          left: 50%;
+          bottom: 0px;
+          background-color: #ffcc00;
+          transition: all 0.3s ease;
+          border-radius: 2px;
+          transform: translateX(-50%);
+        }
+
+        .search-btn:hover {
+          color: #ffcc00;
+        }
+
+        .search-btn:hover::after {
+          width: 100%;
+        }
+
+
+        .search-form {
+          position: absolute;
+          left: 120px;
+          top: 40%;
+          transform: translateY(-50%) scaleX(0);
+          transform-origin: left;
+          width: 250px;
+          transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease;
+          opacity: 0;
+          z-index: 1;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 8px 20px;
+          border-radius: 50px;
+          border: none;
+          outline: none;
+          background: #f5f5f5;
+          box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+          font-size: 14px;
+          transition: box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        .search-input:focus {
+          box-shadow: 0 0 20px rgba(255,204,0,0.6);
+          background: #fff;
+        }
+
+        .search-wrapper.active .search-form {
+          transform: translateY(-50%) scaleX(1);
+          opacity: 1;
+        }
+
+        .content-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+          .content-card {
+            flex-direction: column;
+            gap: 8px;
+          }
+        }
+
+        .btn-custom:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-view {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          color: #000;
+          text-decoration: none;
+          background: none;
+          border: none;
+          position: relative;
+          transition: color 0.3s ease;
+          cursor: pointer;
+        }
+
+        .btn-view::after {
+          content: "";
+          position: absolute;
+          width: 0%;
+          height: 2px;
+          left: 50%;
+          bottom: 8px;
+          background-color: #ffcc00;
+          transition: width 0.3s ease;
+          border-radius: 2px;
+          transform: translateX(-50%);
+          z-index: 2;
+        }
+
+        .btn-view:hover {
+          color: #ffcc00;
+        }
+
+        .btn-view:hover::after {
+          width: 100%;
+        }
+
+
+        </style>
+</head>
+<body style="background-color: #d3d2d0;">
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c2d2d;">
+    <div class="container">
+      <div class="menu-icon ms-auto" id="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div id="profile-panel" style="
+          position: fixed;
+          top: 0;
+          right: -350px;
+          width: 320px;
+          height: 100%;
+          background: #2c2d2d;
+          box-shadow: -3px 0 15px rgba(0,0,0,0.3);
+          transition: right 1s ease;
+          padding: 25px 20px;
+          z-index: 1050;
+          color: #f0f0f0;
+          font-family: "Vazir", sans-serif;
+      ">
+          <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+              {% if user_profile %}
+                <img src="{{ url_for('static', filename='profile_pics/' + user_profile.photo) }}"
+                     class="rounded-circle border border-3 border-warning"
+                     width="80" height="80" alt="Profile Photo">
+              {% else %}
+                <img src="{{ url_for('static', filename='default-avatar.png') }}"
+                     class="rounded-circle border border-3 border-warning"
+                     width="80" height="80" alt="Profile Photo">
+              {% endif %}
+
+              <h4 style="margin:0; color:#ffcc00;">
+                  {% if session.username and user_profile %}
+                      {{ user_profile['first_name'] }} {{ user_profile['last_name'] }}
+                  {% else %}
+                      مشخصات کاربر
+                  {% endif %}
+              </h4>
+          </div>
+
+          <hr style="border-color: rgba(255,255,255,0.2);">
+
+          {% if session.username and user_profile %}
+              <p><strong>نام:</strong> {{ user_profile['first_name'] }}</p>
+              <p><strong>نام خانوادگی:</strong> {{ user_profile['last_name'] }}</p>
+              <p><strong>شماره تماس:</strong> {{ user_profile['phone'] }}</p>
+              <p><strong>ایمیل:</strong> {{ user_profile['email'] }}</p>
+          {% endif %}
+
+          <div style="margin-top: 30px; display:flex; flex-direction:column; gap:12px;">
+              <button id="close-panel" class="btn btn-secondary w-100 "
+                      style="background:#555; border:none; border-radius:12px; padding:10px;">
+                  بستن
+              </button>
+
+              <a href="{{ url_for('logout') }}"
+                 class="btn w-100"
+                 style="background:#ffcc00; color:#000; font-weight:bold;
+                        border-radius:12px; padding:10px; text-align:center;
+                        text-decoration:none; transition:0.3s;">
+                 خروج
+              </a>
+          </div>
+      </div>
+
+      <label class="navbar-brand nastaliq-brand" style="margin-right:50px;">هنرکده فارسی</label>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse d-flex justify-content-center"style="margin-right:100px;" id="navbarNav">
+          <ul class="navbar-nav custom-nav-graphic" style="display:inline-flex; transform: translateX(90px);">
+            <li class="nav-item"><a class="nav-link active" href="{{ url_for('index') }}">خانه</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}">نگارش محتوا</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('categories') }}">آرشیو</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('my_artworks') }}">آثار من</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">درباره ما</a></li>
+          </ul>
+      </div>
+    </div>
+
+    <div class="search-wrapper">
+      <button id="search-btn" class="search-btn">
+        <i class="bi bi-search"></i>
+      </button>
+      <form class="search-form" action="{{ url_for('search') }}" method="GET">
+        <input id="search-input" type="text" name="q" placeholder="جستجو..." class="search-input">
+      </form>
+    </div>
+
+  </nav>
+
+  <section class="container my-5">
+    <h2 class="mb-4" style="font-weight: 700; color: #1a1a1a;">جدیدترین آثار</h2>
+    <div class="row text-center fw-bold mb-3">
+      <div class="col" style="color:#000;">شعر</div>
+      <div class="col" style="color:#000;">داستان کوتاه</div>
+      <div class="col" style="color:#000;">متن ادبی</div>
+    </div>
+
+    {% for r in rows %}
+    <div class="row g-3 align-items-center mb-3">
+
+      <div class="col">
+        {% if r.poem %}
+          <div class="p-3 rounded-3 shadow-sm d-flex justify-content-between align-items-center content-card"
+               style="background: #ebebef; transition: transform 0.3s, box-shadow 0.3s;">
+            <div style="max-width:70%;">
+              <small class="text-muted d-block mb-1">
+                سراینده: {{ r.poem['first_name'] }} {{ r.poem['last_name'] }}
+              </small>
+              <div class="text-truncate" style="font-weight:500;">
+                {{ r.poem['عنوان'] }}
+              </div>
+            </div>
+            <a href="{{ url_for('view_item', cat='poems', item_id=r.poem['شماره']) }}"
+               class="btn btn-sm btn-view">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+        {% else %}
+          <small class="text-muted">—</small>
+        {% endif %}
+      </div>
+
+
+      <div class="col">
+        {% if r.story %}
+          <div class="p-3 rounded-3 shadow-sm d-flex justify-content-between align-items-center content-card"
+               style="background: #ebebef; transition: transform 0.3s, box-shadow 0.3s;">
+            <div style="max-width:70%;">
+              <small class="text-muted d-block mb-1">
+                نویسنده: {{ r.story['first_name'] }} {{ r.story['last_name'] }}
+              </small>
+              <div class="text-truncate" style="font-weight:500;">
+                {{ r.story['عنوان'] }}
+              </div>
+            </div>
+            <a href="{{ url_for('view_item', cat='stories', item_id=r.story['شماره']) }}"
+               class="btn btn-sm btn-view">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+        {% else %}
+          <small class="text-muted">—</small>
+        {% endif %}
+      </div>
+
+
+      <div class="col">
+        {% if r.literature %}
+          <div class="p-3 rounded-3 shadow-sm d-flex justify-content-between align-items-center content-card"
+               style="background: #ebebef; transition: transform 0.3s, box-shadow 0.3s;">
+            <div style="max-width:70%;">
+              <small class="text-muted d-block mb-1">
+                نویسنده: {{ r.literature['first_name'] }} {{ r.literature['last_name'] }}
+              </small>
+              <div class="text-truncate" style="font-weight:500;">
+                {{ r.literature['عنوان'] }}
+              </div>
+            </div>
+            <a href="{{ url_for('view_item', cat='literature', item_id=r.literature['شماره']) }}"
+               class="btn btn-sm btn-view">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+        {% else %}
+          <small class="text-muted">—</small>
+        {% endif %}
+      </div>
+
+
+    </div>
+    {% endfor %}
+  </section>
+
+
+<footer class="py-4 text-center" style="background-color:#0a0a0a; color: #fff">
+    <p>© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+  </footer>
+  <script>
+  const panel = document.getElementById("profile-panel");
+  const toggleBtn = document.getElementById("menu-toggle");
+  const closeBtn = document.getElementById("close-panel");
+
+  toggleBtn.onclick = function (event) {
+    event.stopPropagation();
+    panel.style.right = "0";
+  };
+
+  closeBtn.onclick = function (event) {
+    event.stopPropagation();
+    panel.style.right = "-350px";
+  };
+
+  document.addEventListener("click", function (event) {
+    if (panel.style.right === "0px" && !panel.contains(event.target) && event.target !== toggleBtn) {
+      panel.style.right = "-350px";
+    }
+  });
+
+  const searchBtn = document.getElementById('search-btn');
+  const searchWrapper = document.querySelector('.search-wrapper');
+  const searchInput = document.getElementById('search-input');
+
+  searchBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    searchWrapper.classList.toggle('active');
+    if (searchWrapper.classList.contains('active')) {
+      searchInput.focus();
+    }
+  });
+
+  document.addEventListener('click', () => {
+    searchWrapper.classList.remove('active');
+    searchInput.value = "";
+  });
+
+  searchInput.addEventListener('click', e => e.stopPropagation());
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

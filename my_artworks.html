@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>آثار من</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .custom-nav-graphic {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .custom-nav-graphic .nav-link {
+            position: relative;
+            color: #f0f0f0;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-nav-graphic .nav-link::after {
+            content: "";
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            left: 50%;
+            bottom: 4px;
+            background-color: #ffcc00;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .custom-nav-graphic .nav-link:hover {
+            color: #ffcc00;
+        }
+
+        .custom-nav-graphic .nav-link:hover::after {
+            left: 0;
+            width: 100%;
+        }
+
+        .custom-nav-graphic .nav-link.active {
+            color: #ffcc00;
+            font-weight: 600;
+        }
+
+        @media (max-width: 991px) {
+            .custom-nav-graphic {
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+        }
+
+        .btn-back {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          color: #fff;
+          text-decoration: none;
+          position: absolute;
+          top: 36px;
+          left: 15px;
+          transition: color 0.3s ease;
+          z-index: 2000; /* اضافه شد */
+        }
+
+
+        .btn-back::after {
+          content: "";
+          position: absolute;
+          width: 0%;
+          height: 2px;
+          left: 50%;
+          bottom: 0;
+          background-color: #ffcc00;
+          transition: width 0.3s ease;
+          border-radius: 2px;
+          transform: translateX(-50%);
+          z-index: 2;
+        }
+
+        .btn-back:hover {
+          color: #ffcc00;
+        }
+
+        .btn-back:hover::after {
+          width: 100%;
+        }
+
+          .search-wrapper {
+            position: relative;
+            display: inline-block;
+          }
+
+          .search-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #fff;
+            margin-left: 40px;
+            position: relative;
+            transition: color 0.3s ease;
+          }
+
+          .search-btn::after {
+            content: "";
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            left: 50%;
+            bottom: 4px;
+            background-color: #ffcc00;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+            transform: translateX(-50%);
+          }
+
+          .search-btn:hover {
+            color: #ffcc00;
+          }
+
+          .search-btn:hover::after {
+            width: 100%;
+          }
+
+          .search-form {
+            position: absolute;
+            left: 40px;
+            top: 40%;
+            transform: translateY(-50%) scaleX(0);
+            transform-origin: left;
+            width: 250px;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease;
+            opacity: 0;
+            z-index: 1;
+          }
+
+          .search-input {
+            width: 100%;
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: none;
+            outline: none;
+            background: #f5f5f5;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            font-size: 14px;
+            transition: box-shadow 0.3s ease, background 0.3s ease;
+          }
+
+          .search-input:focus {
+            box-shadow: 0 0 20px rgba(255,204,0,0.6);
+            background: #fff;
+          }
+
+          .search-wrapper.active .search-form {
+            transform: translateY(-50%) scaleX(1);
+            opacity: 1;
+          }
+
+        .artwork-card {
+            min-height: 150px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #fff;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+
+        .artwork-column h4 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .btn-action {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+          color: #000;
+          text-decoration: none;
+          background: none;
+          border: none;
+          padding: 5px 10px;
+          position: relative;
+          transition: color 0.3s ease;
+          cursor: pointer;
+        }
+
+        .btn-action::after {
+          content: "";
+          position: absolute;
+          width: 0%;
+          height: 2px;
+          left: 50%;
+          bottom: 0;
+          background-color: #ffcc00;
+          transition: width 0.3s ease;
+          border-radius: 2px;
+          transform: translateX(-50%);
+          z-index: 2;
+        }
+
+        .btn-action:hover {
+          color: #ffcc00;
+        }
+
+        .btn-action:hover::after {
+          width: 100%;
+        }
+
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #000;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+    </style>
+</head>
+<body style="background-color: #d3d2d0;">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c2d2d;">
+    <div class="container position-relative">
+
+      <leble class="navbar-brand nastaliq-brand" >هنرکده فارسی</leble>
+      <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarNav">
+          <ul class="navbar-nav custom-nav-graphic" style="display:inline-flex; transform: translateX(50px);">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">خانه</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}">نگارش محتوا</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('categories') }}">آرشیو</a></li>
+            <li class="nav-item"><a class="nav-link active" href="{{ url_for('my_artworks') }}">آثار من</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">درباره ما</a></li>
+          </ul>
+      </div>
+
+      <a href="{{url_for('index')}}" class="btn-back">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+      <div >
+        <div class="search-wrapper">
+          <button id="search-btn" class="search-btn">
+            <i class="bi bi-search"></i>
+          </button>
+          <form class="search-form" action="{{ url_for('search_my_artworks') }}" method="GET">
+            <input id="search-input" type="text" name="q" placeholder="جستجو در آثار من..." class="search-input">
+          </form>
+        </div>
+    </div>
+  </nav>
+
+  <div class="page-title text-center my-4">
+      <h1>آثار من</h1>
+  </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 artwork-column d-flex flex-column align-items-center">
+            <h4 class="text-center">شعر</h4>
+            {% for artwork in artworks if artwork.category == 'poems' %}
+            <div class="card artwork-card w-100 mb-3" style="background:#ebebef;">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ artwork.title }}</h5>
+                    <p class="card-text">{{ artwork.content[:100] }}{% if artwork.content|length > 100 %}...{% endif %}</p>
+                    <a href="{{ url_for('view_item', cat='poems', item_id=artwork.id) }}"class="btn-action mx-1">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ url_for('edit_artwork', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                      <i class="bi bi-pen"></i>
+                    </a>
+                    <form action="{{ url_for('delete_artwork', cat='poems', item_id=artwork.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-action mx-1" onclick="return confirm('آیا مطمئن هستید؟')">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-4 artwork-column d-flex flex-column align-items-center">
+            <h4 class="text-center">داستان کوتاه</h4>
+            {% for artwork in artworks if artwork.category == 'stories' %}
+            <div class="card artwork-card w-100 mb-3" style="background:#ebebef;">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ artwork.title }}</h5>
+                    <p class="card-text">{{ artwork.content[:100] }}{% if artwork.content|length > 100 %}...{% endif %}</p>
+                    <a href="{{ url_for('view_item', cat='stories', item_id=artwork.id) }}"class="btn-action mx-1">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ url_for('edit_artwork', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                      <i class="bi bi-pen"></i>
+                    </a>
+                    <form action="{{ url_for('delete_artwork', cat=artwork.category, item_id=artwork.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-action mx-1" onclick="return confirm('آیا مطمئن هستید؟')">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-4 artwork-column d-flex flex-column align-items-center">
+            <h4 class="text-center">متن ادبی</h4>
+            {% for artwork in artworks if artwork.category == 'literature' %}
+            <div class="card artwork-card w-100 mb-3" style="background:#ebebef;">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ artwork.title }}</h5>
+                    <p class="card-text">{{ artwork.content[:100] }}{% if artwork.content|length > 100 %}...{% endif %}</p>
+                    <a href="{{ url_for('view_item', cat='literature', item_id=artwork.id) }}"class="btn-action mx-1">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ url_for('edit_artwork', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                      <i class="bi bi-pen"></i>
+                    </a>
+                    <form action="{{ url_for('delete_artwork', cat=artwork.category, item_id=artwork.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-action mx-1" onclick="return confirm('آیا مطمئن هستید؟')">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+</body>
+<footer class="py-4 text-center" style="background-color:#0a0a0a; color: #fff">
+    <p>© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+  </footer>
+<script>
+  const searchBtn = document.getElementById('search-btn');
+  const searchWrapper = document.querySelector('.search-wrapper');
+  const searchInput = document.getElementById('search-input');
+
+  searchBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    searchWrapper.classList.toggle('active');
+    if (searchWrapper.classList.contains('active')) {
+      searchInput.focus();
+    }
+  });
+
+  document.addEventListener('click', () => {
+    searchWrapper.classList.remove('active');
+    searchInput.value = "";
+  });
+
+  searchInput.addEventListener('click', e => e.stopPropagation());
+</script>
+</html>

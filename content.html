@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ item['عنوان'] if item else 'موردی یافت نشد' }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Vazir", sans-serif;
+      background: #d3d2d0;
+      color: #000;
+    }
+
+    .button-column {
+      position: fixed;
+      top: 45px;
+      left: 110px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .btn-back {
+      font-size: 22px;
+      color: #000;
+      margin-left: 10px;
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .btn-back::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 50%;
+      bottom: 0px;
+      background-color: #ffcc00;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+
+    .btn-back:hover {
+      color: #ffcc00;
+    }
+    .btn-back:hover::after{
+      width: 100%;
+    }
+
+    .content-card {
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      background: #ebebef;
+      padding: 25px;
+      margin-top: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .content-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      margin-top: 10px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    h6 {
+      color: #777;
+      margin-bottom: 10px;
+    }
+
+    .alert-warning {
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 576px) {
+      .button-column {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+      }
+
+      .btn-custom {
+        padding: 6px 15px;
+        font-size: 14px;
+      }
+    }
+
+    #comment-section .card {
+      max-height: 200px; /* یا هر ارتفاع مناسب */
+      overflow-y: auto;
+    }
+
+    .btn-action {
+      background: none;
+      border: none;
+      color: #000; /* آبی فیسبوک */
+      font-weight: 500;
+      cursor: pointer;
+      padding: 5px 10px;
+      font-size: 20px;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+
+    .btn-action:hover {
+      color: #ffcc00;
+    }
+
+    #like-btn.liked i {
+      color: #1877f2;
+      font-weight: bold;
+    }
+    #like-section {
+      position: absolute;
+      top: 120%;   /* پایین‌تر از دکمه لایک */
+      right: 0;    /* از سمت راست بچسبه */
+      width: 220px;
+      max-height: 0;
+      overflow-y:auto;
+      opacity: 0;
+      pointer-events: none;
+      transition: all .3s ease;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+
+    #like-section.active {
+      max-height: 250px;
+      opacity: 1;
+      pointer-events: auto;
+      padding: 1rem;
+    }
+
+
+  </style>
+</head>
+
+<body>
+  <div class="container py-5">
+    <div class="button-column mb-3">
+      <a href="javascript:history.back()" class="btn-back">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+    </div>
+
+    {% if item %}
+      <h6 class="text-muted">{{ category_name }}</h6>
+      <h2>{{ item['عنوان'] }}</h2>
+
+      <!-- نمایش نام و نام خانوادگی -->
+      {% if item['first_name'] and item['last_name'] %}
+        {% if category_name == "شعر" %}
+          <p class="text-muted">سراینده: {{ item['first_name'] }} {{ item['last_name'] }}</p>
+        {% else %}
+          <p class="text-muted">نویسنده: {{ item['first_name'] }} {{ item['last_name'] }}</p>
+        {% endif %}
+      {% else %}
+        {% if category_name == "شعر" %}
+          <p class="text-muted">سراینده: ناشناس</p>
+        {% else %}
+          <p class="text-muted">نویسنده: ناشناس</p>
+        {% endif %}
+      {% endif %}
+
+
+      <div class="content-card">
+        <div style="white-space: pre-wrap;">
+          {{ item['محتوا'] }}
+        </div>
+
+
+      <!-- بخش اکشن‌ها -->
+      <div class="d-flex justify-content-around align-items-center mt-4">
+        <!-- Like -->
+        <!-- Like -->
+        <div class="d-flex align-items-center position-relative">
+          <!-- دکمه لایک -->
+          <button id="like-btn" class="btn-action d-flex align-items-center me-2">
+            <i id="like-icon" class="bi bi-hand-thumbs-up"></i>
+          </button>
+
+          <!-- تعداد لایک‌ها -->
+          <a href="javascript:void(0)" id="like-count" class="ms-1 text-decoration-none">0</a>
+
+          <!-- بخش اسلاید لایک‌ها -->
+          <div id="like-section" class="card p-3 mt-2">
+            <h6>لایک‌کنندگان</h6>
+            <ul id="likes-list" class="list-unstyled mb-0">
+              <li class="text-muted">هنوز کسی لایک نکرده</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <!-- Comment -->
+        <button id="comment-btn" class="btn-action d-flex align-items-center">
+          <i class="bi bi-chat-dots"></i>
+          <span id="comment-count" class="ms-2">0</span>
+        </button>
+
+        <!-- Share -->
+        <button id="share-btn" class="btn-action d-flex align-items-center">
+          <i class="bi bi-share"></i>
+          <span class="ms-2"></span>
+        </button>
+      </div>
+
+      <!-- بخش اسلاید کامنت‌ها -->
+      <div id="comment-section" class="mt-3" style="display: none;">
+        <div class="card p-3">
+          <h6>نظرها</h6>
+
+          <!-- لیست نظرها -->
+          <div id="comments-list" class="mb-3">
+            <!-- کامنت‌ها اینجا با JS یا سرور لود میشن -->
+          </div>
+
+          <!-- فرم افزودن نظر -->
+          <form id="comment-form" class="d-flex">
+            <input type="text" id="comment-input" class="form-control" placeholder="نظر خود را بنویسید..." required>
+            <button type="submit" class="btn btn-primary ms-2">
+              <i class="bi bi-send"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      </div>
+    {% else %}
+      <div class="alert alert-warning text-center">آیتم مورد نظر یافت نشد.</div>
+    {% endif %}
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<script>
+const cat = "{{ category_name }}";
+const itemId = "{{ item['شماره'] }}";
+
+// وضعیت لایک
+let liked = false;
+
+// گرفتن اطلاعات اولیه (لایک + کامنت‌ها)
+fetch(`/interactions/${cat}/${itemId}`)
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("like-count").textContent = data.likes;
+    document.getElementById("comment-count").textContent = data.comment_count;
+
+    document.getElementById("like-count").textContent = data.likes;
+
+    const icon = document.getElementById("like-icon");
+    if (data.has_liked) {
+      icon.classList.remove("bi-hand-thumbs-up");
+      icon.classList.add("bi-hand-thumbs-up-fill");
+    } else {
+      icon.classList.remove("bi-hand-thumbs-up-fill");
+      icon.classList.add("bi-hand-thumbs-up");
+    }
+
+    // 👇 نمایش کامنت‌ها
+    const list = document.getElementById("comments-list");
+    list.innerHTML = "";
+    data.comments.forEach(c => {
+      const div = document.createElement("div");
+      div.className = "border-bottom py-2";
+      let nameToShow = c.name && c.name.trim() !== "" ? c.name : "کاربر ناشناس";
+      div.innerHTML = `<strong>${nameToShow}:</strong> ${c.text}`;
+      list.appendChild(div);
+    });
+  });
+
+  const likeCount = document.getElementById("like-count");
+  const likeSection = document.getElementById("like-section");
+  const likesList = document.getElementById("likes-list");
+
+  likeCount.addEventListener("click", () => {
+    likeSection.classList.toggle("active");
+
+    if (likeSection.classList.contains("active")) {
+      fetch(`/likes/{{ category_name }}/{{ item['شماره'] }}`)
+        .then(res => res.json())
+        .then(data => {
+          likesList.innerHTML = "";
+          if (data.length === 0) {
+            likesList.innerHTML = "<li class='text-muted'>هنوز کسی لایک نکرده</li>";
+          } else {
+            data.forEach(user => {
+              const li = document.createElement("li");
+              li.className = "d-flex align-items-center mb-2 justify-content-between";
+
+              const iconColor = (user.username === "{{ session.get('username') }}") ? "text-primary" : "text-dark";
+
+              li.innerHTML = `
+                <span>${user.first_name} ${user.last_name}</span>
+                <i class="bi bi-hand-thumbs-up-fill ${iconColor} me-2"></i>
+              `;
+              likesList.appendChild(li);
+            });
+          }
+        });
+    }
+  });
+
+
+// ارسال کامنت
+document.getElementById("comment-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const input = document.getElementById("comment-input");
+  const text = input.value.trim();
+  if (text !== "") {
+    fetch(`/comment/${cat}/${itemId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ comment: text })
+    })
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById("comments-list");
+        list.innerHTML = "";
+        data.comments.forEach(c => {
+          const div = document.createElement("div");
+          div.className = "border-bottom py-2";
+
+          let nameToShow = c.name && c.name.trim() !== "" ? c.name : "کاربر ناشناس";
+          div.innerHTML = `<strong>${nameToShow}:</strong> ${c.text}`;
+
+          list.appendChild(div);
+        });
+        input.value = "";
+      });
+  }
+});
+
+
+document.getElementById("like-btn").addEventListener("click", async function () {
+  const response = await fetch(`/like/${cat}/${itemId}`, { method: "POST" });
+  const data = await response.json();
+
+  // آپدیت تعداد لایک‌ها
+  document.getElementById("like-count").innerText = data.likes;
+
+  // تغییر آیکن بر اساس وضعیت has_liked
+  const icon = document.getElementById("like-icon");
+  if (data.has_liked) {
+    icon.classList.remove("bi-hand-thumbs-up");
+    icon.classList.add("bi-hand-thumbs-up-fill");  // پر
+  } else {
+    icon.classList.remove("bi-hand-thumbs-up-fill");
+    icon.classList.add("bi-hand-thumbs-up");       // خالی
+  }
+});
+
+
+
+// باز و بسته شدن بخش کامنت‌ها
+document.getElementById("comment-btn").addEventListener("click", function () {
+  const section = document.getElementById("comment-section");
+  if (section.style.display === "none") {
+    section.style.display = "block";
+    section.style.maxHeight = section.scrollHeight + "px";
+  } else {
+    section.style.maxHeight = "0";
+    setTimeout(() => {
+      section.style.display = "none";
+    }, 400);
+  }
+});
+
+document.getElementById("comment-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const text = document.getElementById("comment-input").value.trim();
+
+  if (!text) return;
+
+  const response = await fetch(`/comment/${cat}/${itemId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ comment: text })
+  });
+
+  const data = await response.json();
+
+  // آپدیت تعداد کامنت‌ها
+  document.getElementById("comment-count").innerText = data.comment_count;
+
+  // آپدیت لیست کامنت‌ها
+  const list = document.getElementById("comments-list");
+  list.innerHTML = "";
+  data.comments.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "border-bottom py-2";
+    let nameToShow = c.name && c.name.trim() !== "" ? c.name : "کاربر ناشناس";
+    div.innerHTML = `<strong>${nameToShow}:</strong> ${c.text}`;
+    list.appendChild(div);
+  });
+
+  // پاک کردن input
+  document.getElementById("comment-input").value = "";
+});
+
+
+
+// دکمه اشتراک‌گذاری
+document.getElementById("share-btn").addEventListener("click", function () {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => {
+    alert("لینک کپی شد: " + url);
+  }).catch(() => {
+    alert("کپی لینک انجام نشد!");
+  });
+});
+</script>
+
+
+
+
+</html>
